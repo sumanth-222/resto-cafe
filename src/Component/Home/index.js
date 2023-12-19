@@ -18,7 +18,6 @@ class Home extends Component {
     isLoading: true,
     restaurantName: '',
     TotalCount: 0,
-    menuId: '11',
   }
 
   componentDidMount() {
@@ -26,7 +25,6 @@ class Home extends Component {
   }
 
   getData = async () => {
-    const {menuId} = this.state
     const url = 'https://run.mocky.io/v3/77a7e71b-804a-4fbd-822c-3e365d3482cc'
     const options = {
       method: 'GET',
@@ -42,14 +40,13 @@ class Home extends Component {
         menuCategoryId: each.menu_category_id,
         categoryList: each.category_dishes,
       }))
-
+      console.log(data)
       console.log(menuGenre)
 
-      const category = menuGenre.filter(each => each.menuCategoryId === menuId)
-      console.log(menuId)
-      const updateCategory = category[0].categoryList
+      const category = menuGenre[0].categoryList
 
-      const updatedData = updateCategory.map(each => ({
+      console.log(category)
+      const updatedData = category.map(each => ({
         addOnCat: each.addonCat,
         dishAvailability: each.dish_Availability,
         dishCalories: each.dish_calories,
@@ -75,9 +72,26 @@ class Home extends Component {
   }
 
   getMenuCategoryId = async id => {
-    const {menuId} = this.state
-    this.setState({menuId: id})
-    console.log(typeof menuId)
+    const menuCategories = this.state
+    const category = menuCategories.menuCategories.filter(
+      each => each.menuCategoryId === id,
+    )
+
+    const updatedData = await category[0].categoryList.map(each => ({
+      addOnCat: each.addonCat,
+      dishAvailability: each.dish_Availability,
+      dishCalories: each.dish_calories,
+      dishCurrency: each.dish_currency,
+      dishDescription: each.dish_description,
+      dishImage: each.dish_image,
+      dishPrice: each.dish_price,
+      nextUrl: each.nxturl,
+      dishId: each.dish_id,
+      dishName: each.dish_name,
+      count: 0,
+    }))
+
+    this.setState({categoryItem: updatedData})
   }
 
   totalCount = count => {
@@ -180,3 +194,4 @@ class Home extends Component {
   }
 }
 export default Home
+    
